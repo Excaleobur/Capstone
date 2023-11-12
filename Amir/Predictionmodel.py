@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 
-# Load the dataset (replace 'your_dataset.csv' with the actual file)
+# Load the dataset (replace 'your_dataset.csv' with the actgitual file)
 df = pd.read_csv('Amir/Data/normalized_RB_data.csv')
 # Select features (independent variables) and the target variable
 X = df[['attempts', 'ypa','touchdowns','elusive_rating','fumbles']]  # Replace with actual features
