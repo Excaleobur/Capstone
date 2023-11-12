@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
+import joblib
 
 # Load the dataset (replace 'your_dataset.csv' with the actgitual file)
 df = pd.read_csv('Amir/Data/normalized_RB_data.csv')
@@ -77,3 +78,4 @@ plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.title("Training Loss")
 plt.show()
+joblib.dump(model, '/Users/amirrezarafati/Downloads/CapsotneModel/RB/Repo/Capstone/Amir/Data/PredictionModel.pkl')
