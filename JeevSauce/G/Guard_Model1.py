@@ -6,12 +6,11 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
-import joblib
 
 # Load the dataset (replace 'your_dataset.csv' with the actgitual file)
-df = pd.read_csv('Amir/Data/normalized_RB_data.csv')
+df = pd.read_csv('Capstone/JeevSauce/G/GData/normalized_G_data.csv')
 # Select features (independent variables) and the target variable
-X = df[['attempts', 'ypa','touchdowns','elusive_rating','fumbles']]  # Replace with actual features
+X = df[['player_game_count','block_percent','declined_penalties','hits_allowed','hurries_allowed','non_spike_pass_block','penalties','pressures_allowed', 'sacks_allowed','snap_counts_block','snap_counts_ce','snap_counts_lt','snap_counts_pass_block', 'snap_counts_pass_play','snap_counts_run_block']]  # Replace with actual features
 y = df['Match']  # Replace with actual target variable
 
 X = np.array(X, dtype=np.float32)
@@ -78,4 +77,3 @@ plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.title("Training Loss")
 plt.show()
-joblib.dump(model, '/Users/amirrezarafati/Downloads/CapsotneModel/RB/Repo/Capstone/Amir/Data/PredictionModel.pkl')
