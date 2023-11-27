@@ -1,0 +1,13 @@
+# Ignore system and hidden files
+.DS_Store
+Thumbs.db
+.idea/
+
+# Ignore user-specific files and directories
+/node_modules/
+/venv/
+/__pycache__/
+/.vscode/
+/build/
+/dist/
+/*.log
