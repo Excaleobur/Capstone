@@ -27,7 +27,7 @@ clf.fit(X_train, y_train)
 # Prediction
 y_pred = clf.predict(X_test)
 
-# Metrics
+# Metrics 
 cm = confusion_matrix(y_test, y_pred)
 precision, recall, fscore, _ = precision_recall_fscore_support(y_test, y_pred, average='binary')
 
