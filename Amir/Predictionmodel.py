@@ -4,20 +4,25 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
 import matplotlib.pyplot as plt
 import joblib
 
 # Load the dataset (replace 'your_dataset.csv' with the actgitual file)
 df = pd.read_csv('Amir/Data/normalized_RB_data.csv')
 # Select features (independent variables) and the target variable
-X = df[['attempts', 'ypa','touchdowns','elusive_rating','fumbles']]  # Replace with actual features
+X = df[['player_game_count', 'attempts', 'avoided_tackles', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'elusive_rating', 'explosive', 'first_downs', 'fumbles', 'gap_attempts', 'grades_hands_fumble', 'grades_offense', 'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run', 'grades_run_block', 'longest', 'penalties', 'rec_yards', 'receptions', 'routes', 'run_plays', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'zone_attempts']] # Replace with actual features
 y = df['Match']  # Replace with actual target variable
+
 
 X = np.array(X, dtype=np.float32)
 y = np.array(y, dtype=np.float32)
 # Split data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+
+column_names = df.columns.tolist()
+print(column_names)
 
 # Convert data to PyTorch tensors
 X_train = torch.tensor(X_train, dtype=torch.float32)
@@ -67,10 +72,20 @@ with torch.no_grad():
 y_test = y_test.numpy()
 y_pred = y_pred.numpy()
 
+
 # Calculate accuracy
 accuracy = accuracy_score(y_test, y_pred)
 
+# Calculate F1 score
+f1 = f1_score(y_test, y_pred)
+
+# Generate confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+
 print(f"Accuracy: {accuracy * 100:.2f}%")
+print(f"F1 Score: {f1:.2f}")
+print("Confusion Matrix:")
+print(conf_matrix)
 
 # Visualize the loss curve (optional)
 plt.plot(losses)
