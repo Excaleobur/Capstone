@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/jeeva/LeoCapstone/Capstone/JeevSauce/G/GData",
-      "program": "c:/Users/jeeva/LeoCapstone/Capstone/JeevSauce/G/GData/build/Debug/outDebug",
+      "cwd": "c:/Users/jeeva/LeoCapstone/Capstone/JeevSauce",
+      "program": "c:/Users/jeeva/LeoCapstone/Capstone/JeevSauce/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
