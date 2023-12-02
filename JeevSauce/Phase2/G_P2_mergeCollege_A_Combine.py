@@ -1,31 +1,16 @@
 import pandas as pd
 
-# List of CSV files to merge
-csv_files = [
-    'Capstone\JeevSauce\Phase2\data\merged_G_data_onlycombine_noCollegeStats.csv',
-    'Capstone\JeevSauce\Phase2\data\merged_G_data_onlycombine_noCollegeStats.csv',
+# Load the CSV files with raw string paths
+df_new = pd.read_csv(r'Capstone\JeevSauce\Phase2\data\normalized_merged_G_data_onlycombine_noCollegeStats.csv')
+df_old = pd.read_csv(r'Capstone\JeevSauce\G\GData\normalized_G_data.csv')
 
-    
+# Rename the player name column in df_old to match df_new
+df_old.rename(columns={'player': 'Player'}, inplace=True)
 
-]
+# Merge the two dataframes on the 'Player' column
+merged_df = pd.merge(df_new, df_old, on='Player', how='inner')
 
-# Initialize an empty DataFrame to store the merged data
-merged_data = pd.DataFrame()
+# Save the merged dataframe to a new CSV file
+merged_df.to_csv(r'Capstone\JeevSauce\Phase2\data\collegeAndCombineNormalized.csv', index=False)
 
-# Loop through each CSV file and concatenate them into the merged_data DataFrame
-for file in csv_files:
-    df = pd.read_csv(file)
-    
-    # Filter rows where the 'position' column is 'OG'
-    df = df[df['Pos'] == 'OG']
-    
-    # Concatenate the filtered DataFrame with merged_data
-    merged_data = pd.concat([merged_data, df], ignore_index=True)
-
-# Drop the 'team name' and 'position' columns
-merged_data = merged_data.drop(columns=['Pos'])
-
-# Save the merged data to a new CSV file
-merged_data.to_csv('Capstone\JeevSauce\Phase2\data\merged_G_data_onlycombine_noCollegeStats.csv', index=False)
-
-print("Merged CSV files, filtered for 'G' position, and removed 'team name' and 'position' columns.")
+print("Merged data saved to 'Capstone\JeevSauce\Phase2\data\collegeAndCombineNormalized.csv'.")
