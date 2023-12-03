@@ -7,24 +7,16 @@ from sklearn.metrics import f1_score, confusion_matrix, precision_recall_fscore_
 from imblearn.over_sampling import RandomOverSampler
 
 # Load the dataset
-df = pd.read_csv('Capstone/JeevSauce/Phase2/includeNoCombine/collegeAndCombineNormalized.csv')
-
-# Separate numeric and non-numeric columns
-numeric_columns = df.select_dtypes(include=[np.number]).columns.tolist()
-non_numeric_columns = df.select_dtypes(exclude=[np.number]).columns.tolist()
-
-# Apply one-hot encoding to non-numeric columns
-df_one_hot_encoded = pd.get_dummies(df[non_numeric_columns])
-
-# Combine the numeric data with the one-hot encoded data
-df_combined = pd.concat([df[numeric_columns], df_one_hot_encoded], axis=1)
-
-# Handling NaN values in numeric columns
-df_combined[numeric_columns] = df_combined[numeric_columns].fillna(df_combined[numeric_columns].mean())
+df = pd.read_csv('Capstone/JeevSauce/Phase2/includeNoCombine/INCFinal.csv')
 
 # Select features and target variable
-X = df_combined.drop('Match', axis=1)  # Assuming 'Match' is your target variable
-y = df_combined['Match']
+X = df[['player_game_count', 'block_percent', 'declined_penalties', 'hits_allowed', 'hurries_allowed', 'non_spike_pass_block', 
+        #'Overall_Trend',
+        '40yd', 'Vertical','Bench','Broad Jump','3Cone','Shuttle',
+        'penalties', 'pressures_allowed', 'sacks_allowed', 'snap_counts_block', 'snap_counts_ce', 'snap_counts_lt', 'snap_counts_pass_block', 'snap_counts_pass_play', 'snap_counts_run_block']]
+y = df['Match']
+
+#Player,School,College,Ht,Wt,40yd,Vertical,Bench,Broad Jump,3Cone,Shuttle
 
 # Split the data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
@@ -34,7 +26,7 @@ oversampler = RandomOverSampler(sampling_strategy='minority', random_state=42)
 X_train_resampled, y_train_resampled = oversampler.fit_resample(X_train, y_train)
 
 # Define and train the AdaBoost model
-base_classifier = DecisionTreeClassifier(max_depth=1)  # Adjust the depth as needed
+base_classifier = DecisionTreeClassifier(max_depth=1)  # You can adjust the depth as needed
 ada_classifier = AdaBoostClassifier(base_classifier, n_estimators=50, random_state=42)
 ada_classifier.fit(X_train_resampled, y_train_resampled)
 
