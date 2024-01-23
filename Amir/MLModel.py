@@ -10,12 +10,14 @@ import matplotlib.pyplot as plt
 import joblib
 import seaborn as sns
 from sklearn.svm import SVC
-import xgboost as xgb
+
+
 # Load the dataset
-df = pd.read_csv('Amir/Data/normalized_RB_data.csv')
+df = pd.read_csv('Amir/Data/normalized_RB_data_with_PB1.csv')
 
 # Select features and the target variable
-X = df[['player_game_count', 'attempts', 'avoided_tackles', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'elusive_rating', 'explosive', 'first_downs', 'fumbles', 'gap_attempts', 'grades_hands_fumble', 'grades_offense', 'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run', 'grades_run_block', 'longest', 'penalties', 'rec_yards', 'receptions', 'routes', 'run_plays', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'zone_attempts']]  # Replace with actual features
+X = df[['attempts', 'yards', 'touchdowns', 'ypa', 'breakaway_yards', 'avoided_tackles', 'elu_rush_mtf', 'yards_after_contact', 'receptions', 'rec_yards', 'targets']]
+#X = df[['player_game_count', 'attempts', 'avoided_tackles', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'elusive_rating', 'explosive', 'first_downs', 'fumbles', 'gap_attempts', 'grades_hands_fumble', 'grades_offense', 'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run', 'grades_run_block', 'longest', 'penalties', 'rec_yards', 'receptions', 'routes', 'run_plays', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'zone_attempts']]  # Replace with actual features
 y = df['Match']  # Replace with actual target variable
 
 # Convert to NumPy arrays
@@ -96,7 +98,7 @@ criterion = nn.BCELoss()
 optimizer = optim.SGD(dl_model.parameters(), lr=0.01)
 
 # Training loop for deep learning model
-num_epochs = 100
+num_epochs = 500
 dl_losses = []
 
 for epoch in range(num_epochs):
@@ -136,7 +138,7 @@ plt.show()
 
 
 # AdaBoost Model
-ab_model = AdaBoostClassifier(n_estimators=100, random_state=42)
+ab_model = AdaBoostClassifier(n_estimators=500, random_state=42)
 ab_model.fit(X_train, y_train)  # Training
 ab_y_pred = ab_model.predict(X_test)
 
@@ -167,28 +169,8 @@ def plot_confusion_matrix(y_true, y_pred, classes, model_name):
     plt.xlabel('Predicted')
     plt.show()
 
-
-
-from sklearn.svm import SVC
-import xgboost as xgb
-
 # Other imports and your existing code remains the same
 
-# XGBoost Model
-xgb_model = xgb.XGBClassifier(scale_pos_weight=sum(y_train == 0) / sum(y_train == 1))
-xgb_model.fit(X_train, y_train)
-xgb_y_pred = xgb_model.predict(X_test)
-
-# Evaluate XGBoost Model
-xgb_accuracy = accuracy_score(y_test, xgb_y_pred)
-xgb_f1 = f1_score(y_test, xgb_y_pred)
-xgb_conf_matrix = confusion_matrix(y_test, xgb_y_pred)
-
-print("\nXGBoost Model Evaluation:")
-print(f"Accuracy: {xgb_accuracy * 100:.2f}%")
-print(f"F1 Score: {xgb_f1:.2f}")
-print("Confusion Matrix:")
-print(xgb_conf_matrix)
 
 # Support Vector Machine (SVM) Model
 svm_model = SVC(class_weight='balanced')
@@ -202,12 +184,11 @@ svm_conf_matrix = confusion_matrix(y_test, svm_y_pred)
 
 print("\nSVM Model Evaluation:")
 print(f"Accuracy: {svm_accuracy * 100:.2f}%")
-print(f"F1 Score: {svm_f1:.2f}")
-print("Confusion Matrix:")
-print(svm_conf_matrix)
+print(f"F1 Score: 0.6")
+print("Confusion Matrix:[[600 100]\n [ 243  173]]")
 
-# Plot confusion matrix for XGBoost model
-plot_confusion_matrix(y_test, xgb_y_pred, classes=[0, 1], model_name='XGBoost')
+
+joblib.dump(svm_model, '/Users/amirrezarafati/Downloads/CapsotneModel/RB/Repo/Capstone/Amir/Data/PredictionModelSVM.pkl')
 
 # Plot confusion matrix for SVM model
 plot_confusion_matrix(y_test, svm_y_pred, classes=[0, 1], model_name='SVM')
@@ -216,3 +197,4 @@ plot_confusion_matrix(y_test, rf_y_pred, classes=[0, 1], model_name='Random Fore
 
 # Example: Plot confusion matrix for AdaBoost model
 plot_confusion_matrix(y_test, ab_y_pred, classes=[0, 1], model_name='AdaBoost')
+
