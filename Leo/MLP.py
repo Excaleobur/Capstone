@@ -30,6 +30,8 @@ column_transformer = ColumnTransformer(
 # Transform the dataset with the column_transformer
 features_encoded = column_transformer.fit_transform(features)
 
+features_encoded = features_encoded.toarray()
+
 # Separate the target variable
 y = ncaa['nfl']
 
@@ -69,6 +71,9 @@ class_weights = {i: weights[i] for i in range(len(weights))}
 # Now pass these computed class weights to the model.fit() function
 history = model.fit(X_train, y_train, epochs=100, batch_size=50, validation_split=0.2, class_weight=class_weights)
 
+# save the model
+model.save('model.h5')
+
 # Evaluate the model on the test set
 score = model.evaluate(X_test, y_test, verbose=0)
 print('Test accuracy:', score[1])
@@ -89,10 +94,12 @@ from sklearn.metrics import confusion_matrix, f1_score
 
 # When you want to actually predict stuff with no labels
 y_pred = model.predict(X_test)
-y_pred = (y_pred > 0.5)
-cm = confusion_matrix(y_test, y_pred)
+y_pred_classes = np.argmax(y_pred, axis=1)  # Convert to class labels
+cm = confusion_matrix(y_test, y_pred_classes)
 print(cm)
-print(f1_score(y_test, y_pred))
+f1 = f1_score(y_test, y_pred_classes)
+print(f1)
+
 
 
 
