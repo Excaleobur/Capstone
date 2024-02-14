@@ -13,7 +13,7 @@ from sklearn.utils import class_weight
 from sklearn.utils.class_weight import compute_class_weight
 
 # Read the dataset
-ncaa = pd.read_csv('finalnormalizedncaa.csv')
+ncaa = pd.read_csv('finalnormalizedncaaWithCombine.csv')
 ncaa = ncaa.fillna(0)
 
 # Convert the specified categorical columns to string type
