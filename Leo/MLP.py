@@ -5,8 +5,10 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.utils import class_weight
 import numpy as np
 
+from joblib import dump
+
 # Read the dataset
-ncaa = pd.read_csv('finalnormalizedncaa.csv')
+ncaa = pd.read_csv('Leo/finalnormalizedncaaWithCombine.csv')
 ncaa = ncaa.fillna(0)
 
 # Convert the specified categorical columns to string type
@@ -73,6 +75,9 @@ history = model.fit(X_train, y_train, epochs=100, batch_size=50, validation_spli
 
 # save the model
 model.save('model.h5')
+
+# Save the preprocessing object
+dump(column_transformer, 'my_column_transformer.joblib')
 
 # Evaluate the model on the test set
 score = model.evaluate(X_test, y_test, verbose=0)
