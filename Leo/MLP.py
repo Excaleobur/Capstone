@@ -4,7 +4,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.utils import class_weight
 import numpy as np
-
+import tensorflow as tf
 from joblib import dump
 
 # Read the dataset
@@ -15,23 +15,17 @@ ncaa = ncaa.fillna(0)
 for col in ['position', 'team_name']:
     ncaa[col] = ncaa[col].astype(str)
 
-# Identify categorical columns for one-hot encoding
+# Identify categorical columns for one-hot encoding and handle unknown categories
 categorical_columns = ['position', 'team_name']
-
-# Drop the target column 'nfl' before applying transformations
-features = ncaa.drop(['nfl', 'player'], axis=1)
-
-# Apply one-hot encoding to categorical columns
 column_transformer = ColumnTransformer(
     transformers=[
-        ('onehot', OneHotEncoder(), categorical_columns)
+        ('onehot', OneHotEncoder(handle_unknown='ignore'), categorical_columns)
     ],
-    remainder='passthrough'  # The rest of the columns are passed through
+    remainder='passthrough'
 )
 
 # Transform the dataset with the column_transformer
-features_encoded = column_transformer.fit_transform(features)
-
+features_encoded = column_transformer.fit_transform(ncaa.drop(['nfl', 'player'], axis=1))
 features_encoded = features_encoded.toarray()
 
 # Separate the target variable
@@ -40,46 +34,28 @@ y = ncaa['nfl']
 # Split the dataset into train and test sets
 X_train, X_test, y_train, y_test = train_test_split(features_encoded, y, test_size=0.2, random_state=42)
 
-# now to build the model architecture
-import tensorflow as tf
-
-# Define the number of inputs, hidden layer neurons, and outputs
-# input dimenions is the number of columns in the dataset
-input_dimension = X_train.shape[1]
-hidden_neurons = 128
-num_classes = 2
-
 # Define the model architecture
+input_dimension = X_train.shape[1]
 model = tf.keras.Sequential([
-    tf.keras.layers.Dense(hidden_neurons, activation='relu', input_shape=(input_dimension,)),
-    # Applied to the previous layer
+    tf.keras.layers.Dense(128, activation='relu', input_shape=(input_dimension,)),
     tf.keras.layers.Dropout(0.5),
-    tf.keras.layers.Dense(hidden_neurons, activation='relu'),
-    # tf.keras.layers.Dropout(0.5),
-    tf.keras.layers.Dense(num_classes, activation='softmax')
+    tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(2, activation='softmax')
 ])
 
-# Compile the model using a standard optimizer and loss function for classification
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
+# Compile the model
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-model.summary()
-
-# Compute class weights
-weights = class_weight.compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
-class_weights = {i: weights[i] for i in range(len(weights))}
-
-# Now pass these computed class weights to the model.fit() function
+# Compute class weights and fit the model
+class_weights = class_weight.compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
+class_weights = {i: weights for i, weights in enumerate(class_weights)}
 history = model.fit(X_train, y_train, epochs=100, batch_size=50, validation_split=0.2, class_weight=class_weights)
 
-# save the model
-model.save('model.h5')
-
-# Save the preprocessing object
+# Save the model and preprocessing object
+model.save('leofirstmodel.h5')
 dump(column_transformer, 'my_column_transformer.joblib')
 
-# Evaluate the model on the test set
+# Evaluate the model and print metrics
 score = model.evaluate(X_test, y_test, verbose=0)
 print('Test accuracy:', score[1])
 
