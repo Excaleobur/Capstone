@@ -93,4 +93,5 @@ plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.title("Training Loss")
 plt.show()
-joblib.dump(model, '/Users/jeeva/Downloads/PredictionModel.pkl')
+# Save the model's state dictionary
+torch.save(model.state_dict(), '/Users/jeeva/NextFootball/NewFlaskProject/PredictionModel.pth')
