@@ -56,7 +56,12 @@ param_grid = {
     # smallest number of samples (or data points) that must be present in a node of the tree before it can be split into two new nodes
     'min_samples_split': [2, 5],
     # This is the minimum number of samples a leaf (the end point of a tree where a prediction is made) must have
-    'min_samples_leaf': [1, 2]
+    'min_samples_leaf': [1, 2],
+    # The number of features to consider when looking for the best split (number of questions to consider choosing the best 1 from
+    # to give the most information gain)
+    'max_features': ['sqrt', 'log2', 0.5], 
+    # This parameter allows you to adjust the weight (importance) of each class during model training.
+    'class_weight': [None, 'balanced']
 }
 
 # GridSearchCV is a function that performs hyperparameter tuning in order to find the optimal hyperparameters for a model.
@@ -82,3 +87,4 @@ print("Confusion Matrix: \n", cm)
 # Cross-validation for robustness check
 cv_scores = cross_val_score(best_rf, X_train_smote, y_train_smote, cv=5, scoring='f1')
 print("Average F1 Score from CV: ", np.mean(cv_scores))
+

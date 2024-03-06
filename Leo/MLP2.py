@@ -112,6 +112,29 @@ plt.xlabel('epoch')
 plt.legend(['train', 'validation'], loc='upper left')
 plt.show()
 
+# Create a chart that shows the  10 most impactful features
+
+# Get the 10 feature names from the column transformer
+feature_names = column_transformer.named_transformers_['onehot'].get_feature_names_out(input_features=categorical_columns)
+feature_names = np.r_[feature_names, features.columns.drop(categorical_columns)]
+
+# Create a dataframe with the feature importances
+feature_importance_df = pd.DataFrame({
+    'feature': feature_names,
+    'importance': importances
+})
+
+# Sort the dataframe by importance
+feature_importance_df = feature_importance_df.sort_values(by='importance', ascending=False).head(10)
+
+# Plot the feature importances
+plt.figure(figsize=(10, 10))
+plt.barh(feature_importance_df['feature'], feature_importance_df['importance'])
+plt.xlabel('Importance')
+plt.ylabel('Feature')
+plt.title('Feature Importances')
+plt.show()
+
 # Confusion matrix and F1 score
 y_pred = model.predict(X_test)
 y_pred_classes = np.argmax(y_pred, axis=1)
