@@ -10,15 +10,27 @@ import matplotlib.pyplot as plt
 import joblib
 import seaborn as sns
 from sklearn.svm import SVC
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
+from sklearn.model_selection import train_test_split
 
 
 # Load the dataset
-df = pd.read_csv('Amir/Data/normalized_RB_data_with_PB1.csv')
+df = pd.read_csv('Amir/Data/combine_added.csv')
+print(df.columns)
 
 # Select features and the target variable
-X = df[['attempts', 'yards', 'touchdowns', 'ypa', 'breakaway_yards', 'avoided_tackles', 'elu_rush_mtf', 'yards_after_contact', 'receptions', 'rec_yards', 'targets']]
+#X = df[['attempts', 'yards', 'touchdowns', 'ypa', 'breakaway_yards', 'avoided_tackles', 'elu_rush_mtf', 'yards_after_contact', 'receptions', 'rec_yards', 'targets']]
+X = df[['attempts', 'yards', 'touchdowns', 'ypa', 'breakaway_yards', 'avoided_tackles', 
+'elu_rush_mtf', 'yards_after_contact', 'receptions', 'rec_yards', 'targets','Height', 'Weight',
+       'Hand Size', 'Arm Length', 'Wonderlic', '40Yard', 'Bench Press',
+       'Vert Leap', 'Broad Jump', 'Shuttle', '3Cone', '60Yd Shuttle']]
+
 #X = df[['player_game_count', 'attempts', 'avoided_tackles', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'elusive_rating', 'explosive', 'first_downs', 'fumbles', 'gap_attempts', 'grades_hands_fumble', 'grades_offense', 'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run', 'grades_run_block', 'longest', 'penalties', 'rec_yards', 'receptions', 'routes', 'run_plays', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'zone_attempts']]  # Replace with actual features
-y = df['Match']  # Replace with actual target variable
+y = df['Match']  
 
 # Convert to NumPy arrays
 X = np.array(X, dtype=np.float32)
@@ -184,8 +196,8 @@ svm_conf_matrix = confusion_matrix(y_test, svm_y_pred)
 
 print("\nSVM Model Evaluation:")
 print(f"Accuracy: {svm_accuracy * 100:.2f}%")
-print(f"F1 Score: 0.6")
-print("Confusion Matrix:[[600 100]\n [ 243  173]]")
+print(f"F1 Score: ", svm_f1)
+print("Confusion Matrix:", svm_conf_matrix)
 
 
 joblib.dump(svm_model, '/Users/amirrezarafati/Downloads/CapsotneModel/RB/Repo/Capstone/Amir/Data/PredictionModelSVM.pkl')
@@ -198,3 +210,36 @@ plot_confusion_matrix(y_test, rf_y_pred, classes=[0, 1], model_name='Random Fore
 # Example: Plot confusion matrix for AdaBoost model
 plot_confusion_matrix(y_test, ab_y_pred, classes=[0, 1], model_name='AdaBoost')
 
+
+def plot_actual_vs_predicted_distribution_plotly(y_actual, y_pred, model_name):
+    fig = make_subplots(rows=1, cols=2, subplot_titles=(f'Actual Distribution: {model_name}',
+                                                        f'Predicted Distribution: {model_name}'))
+
+    # Actual distribution
+    fig.add_trace(
+        go.Histogram(x=y_actual, name='Actual', marker_color='blue'),
+        row=1, col=1
+    )
+
+    # Predicted distribution
+    fig.add_trace(
+        go.Histogram(x=y_pred, name='Predicted', marker_color='red'),
+        row=1, col=2
+    )
+
+    # Update titles and labels
+    fig.update_layout(title_text=f"Actual vs. Predicted Distribution: {model_name}",
+                      xaxis_title="Outcome",
+                      yaxis_title="Count",
+                      xaxis2_title="Outcome",
+                      yaxis2_title="Count",
+                      bargap=0.2)
+
+    fig.update_xaxes(tickvals=[0, 1], ticktext=['Didn\'t Make It', 'Made It'], row=1, col=1)
+    fig.update_xaxes(tickvals=[0, 1], ticktext=['Didn\'t Make It', 'Made It'], row=1, col=2)
+
+    fig.show()
+
+
+
+plot_actual_vs_predicted_distribution_plotly(y_test, svm_y_pred, 'SVM')

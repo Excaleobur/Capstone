@@ -6,9 +6,18 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import pandas as pd
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from sklearn.metrics import accuracy_score, confusion_matrix, f1_score
+from sklearn.model_selection import train_test_split
+
 
 # Load the dataset (replace 'your_dataset.csv' with the actgitual file)
-df = pd.read_csv('Capstone/JeevSauce/G/GData/normalized_G_data.csv')
+df = pd.read_csv('/Users/amirrezarafati/Downloads/CapsotneModel/RB/Repo/Capstone/JeevSauce/G/GData/normalized_G_data.csv')
 # Select features (independent variables) and the target variable
 X = df[['player_game_count','block_percent','declined_penalties','hits_allowed','hurries_allowed','non_spike_pass_block','penalties','pressures_allowed', 'sacks_allowed','snap_counts_block','snap_counts_ce','snap_counts_lt','snap_counts_pass_block', 'snap_counts_pass_play','snap_counts_run_block']]  # Replace with actual features
 y = df['Match']  # Replace with actual target variable
@@ -77,3 +86,48 @@ plt.xlabel("Epoch")
 plt.ylabel("Loss")
 plt.title("Training Loss")
 plt.show()
+
+
+# Calculate the confusion matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+
+# Plot the confusion matrix
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='g', cmap='Blues', xticklabels=['Predicted 0', 'Predicted 1'], yticklabels=['Actual 0', 'Actual 1'])
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix')
+plt.show()
+
+def plot_actual_vs_predicted_distribution_plotly(y_actual, y_pred, model_name):
+    fig = make_subplots(rows=1, cols=2, subplot_titles=(f'Actual Distribution: {model_name}',
+                                                        f'Predicted Distribution: {model_name}'))
+
+    # Actual distribution
+    fig.add_trace(
+        go.Histogram(x=y_actual, name='Actual', marker_color='blue'),
+        row=1, col=1
+    )
+
+    # Predicted distribution
+    fig.add_trace(
+        go.Histogram(x=y_pred, name='Predicted', marker_color='red'),
+        row=1, col=2
+    )
+
+    # Update titles and labels
+    fig.update_layout(title_text=f"Actual vs. Predicted Distribution: {model_name}",
+                      xaxis_title="Outcome",
+                      yaxis_title="Count",
+                      xaxis2_title="Outcome",
+                      yaxis2_title="Count",
+                      bargap=0.2)
+
+    fig.update_xaxes(tickvals=[0, 1], ticktext=['Didn\'t Make It', 'Made It'], row=1, col=1)
+    fig.update_xaxes(tickvals=[0, 1], ticktext=['Didn\'t Make It', 'Made It'], row=1, col=2)
+
+    fig.show()
+
+
+
+plot_actual_vs_predicted_distribution_plotly(y_test, y_pred, 'SVM')

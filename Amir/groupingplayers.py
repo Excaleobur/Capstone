@@ -1,4 +1,6 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Load your CSV file
 df = pd.read_csv('Amir/Data/normalized_RB_data_with_PB1.csv')

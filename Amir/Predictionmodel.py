@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import joblib
 
 # Load the dataset (replace 'your_dataset.csv' with the actgitual file)
-df = pd.read_csv('Amir/Data/normalized_RB_data.csv')
+df = pd.read_csv('Amir/Data/filtered_RB_data.csv')
 # Select features (independent variables) and the target variable
 X = df[['player_game_count', 'attempts', 'avoided_tackles', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'elusive_rating', 'explosive', 'first_downs', 'fumbles', 'gap_attempts', 'grades_hands_fumble', 'grades_offense', 'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run', 'grades_run_block', 'longest', 'penalties', 'rec_yards', 'receptions', 'routes', 'run_plays', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'zone_attempts']] # Replace with actual features
 y = df['Match']  # Replace with actual target variable

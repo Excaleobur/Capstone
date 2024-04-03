@@ -13,14 +13,25 @@ import joblib
 import seaborn as sns
 from sklearn.svm import SVC
 
-df = pd.read_csv('Amir/Data/grouped.csv')
+df = pd.read_csv('Amir/Data/combine_added.csv')
+print(df.columns)
 
 # Select features and the target variable
-X = df[['player_game_count', 'attempts', 'avoided_tackles', 'breakaway_attempts', 'breakaway_percent', 'breakaway_yards', 'designed_yards', 'drops', 'elu_recv_mtf', 'elu_rush_mtf', 'elu_yco', 'elusive_rating', 'explosive', 'first_downs', 'fumbles', 'gap_attempts', 'grades_hands_fumble', 'grades_offense', 'grades_offense_penalty', 'grades_pass', 'grades_pass_block', 'grades_pass_route', 'grades_run', 'grades_run_block', 'longest', 'penalties', 'rec_yards', 'receptions', 'routes', 'run_plays', 'scramble_yards', 'scrambles', 'targets', 'total_touches', 'touchdowns', 'yards', 'yards_after_contact', 'yco_attempt', 'ypa', 'yprr', 'zone_attempts']]  # Replace with actual features
-#X = df[[ 'attempts','elusive_rating', 'explosive', 'first_downs', 'fumbles', 'grades_run', 'touchdowns', 'yards', 'yards_after_contact',  'ypa']]  # Replace with actual features
 #X = df[['attempts', 'yards', 'touchdowns', 'ypa', 'breakaway_yards', 'avoided_tackles', 'elu_rush_mtf', 'yards_after_contact', 'receptions', 'rec_yards', 'targets']]
-y = df[['Match', 'PB']]  # Replace with actual target variable
+X = df[['attempts', 'yards', 'touchdowns', 'ypa', 'breakaway_yards', 'avoided_tackles', 
+'elu_rush_mtf', 'yards_after_contact', 'receptions', 'rec_yards', 'targets','Height', 'Weight',
+       'Hand Size', 'Arm Length', 'Wonderlic', '40Yard', 'Bench Press',
+       'Vert Leap', 'Broad Jump', 'Shuttle', '3Cone', '60Yd Shuttle']]
 
+# Handling outliers for a feature column, e.g., 'attempts'
+Q1 = X['attempts'].quantile(0.25)
+Q3 = X['attempts'].quantile(0.75)
+IQR = Q3 - Q1
+lower_bound = Q1 - 1.5 * IQR
+upper_bound = Q3 + 1.5 * IQR
+
+X = X[(X['attempts'] >= lower_bound) & (X['attempts'] <= upper_bound)]
+y = y[(X['attempts'] >= lower_bound) & (X['attempts'] <= upper_bound)]
 # Convert to NumPy arrays
 X = np.array(X, dtype=np.float32)
 y = np.array(y, dtype=np.float32)
@@ -52,7 +63,7 @@ def evaluate_model(y_true, y_pred):
 
         print(f"Target {i+1} - Accuracy: {accuracy:.2f}, F1 Score: {f1:.2f}")
         sns.heatmap(cm, annot=True, fmt='d')
-        plt.title(f'Confusion Matrix for Target {i+1}')
+        plt.title(f'Confusion Matrix for Target \]]i+1}')
         plt.xlabel('Predicted')
         plt.ylabel('Actual')
         plt.show()

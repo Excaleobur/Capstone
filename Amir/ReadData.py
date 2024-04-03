@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
 # Load the CSV file into a Pandas DataFrame
-df = pd.read_csv('Amir/Data/merged_RB_data.csv')
+df = pd.read_csv('Amir/Data/filtered_RB_data.csv')
 
 columns_to_exclude = ['player', 'player_id','Match']
 
@@ -18,6 +18,6 @@ df[columns_to_normalize] = scaler.fit_transform(df[columns_to_normalize])
 
 df.fillna(0, inplace=True)
 # Save the normalized data to a new CSV file
-df.to_csv('Amir/Data/normalized_RB_data.csv', index=False)
+df.to_csv('Amir/Data/filter_Norm.csv', index=False)
 
-print("Data has been normalized and saved to 'normalized_RB_data.csv'.")
+#print("Data has been normalized and saved to 'normalized_RB_data.csv'.")
