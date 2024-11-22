@@ -1,2 +1,2 @@
 # Capstone
-NFl prospect draft model
+NFL prospect draft model
